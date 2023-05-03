@@ -126,7 +126,7 @@ obj <- TSSEnrichment(object = obj, fast = FALSE)
 # atac_fragments == passed_filters
 obj$pct_reads_in_peaks <- obj$atac_peak_region_fragments / obj$atac_fragments * 100
 # blacklist:https://github.com/Boyle-Lab/Blacklist
-# on BP:
+
 if(genome == 'mm10'){
 
 	mm10.blacklist=read.table('blacklists/mm10.blacklist.bed',sep='\t',header = F)
@@ -291,10 +291,6 @@ obj <- FindClusters(obj, graph.name = "wsnn", algorithm = 3, verbose = FALSE)
 p=DimPlot(obj,label=T,reduction='wnn.umap')
 ggsave('WNN-UMAP.pdf',p)
 
-#celltype.names <- levels(obj)
-#tcell.names <- grep("CD4|CD8|Treg", celltype.names,value = TRUE)
-#tcells <- subset(obj, idents = tcell.names)
-#CoveragePlot(tcells, region = 'CD8A', features = 'CD8A', assay = 'ATAC', expression.assay = 'SCT', peaks = FALSE)
 
 saveRDS(obj,'scRNA-ATAC.rds')
 
