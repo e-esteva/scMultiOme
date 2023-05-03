@@ -1,0 +1,16 @@
+configFile=configFile.txt
+
+species='mm10'
+
+cellranger_outs=/gpfs/data/sequence/results/reizislab/2022-11-08/cellranger1/
+outs1=${cellranger_outs}/count-1/outs/
+outs2=${cellranger_outs}/count-2/outs/
+inputs=inputs.txt
+batch_size=$(wc -l ${inputs} | awk '{print $1}')
+
+outs=outs.txt
+
+module1_time=0-3
+module1_mem=100GB
+module1_Path=run-scMultiOme.s
+
