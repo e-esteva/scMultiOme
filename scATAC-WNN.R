@@ -129,30 +129,30 @@ obj$pct_reads_in_peaks <- obj$atac_peak_region_fragments / obj$atac_fragments * 
 # on BP:
 if(genome == 'mm10'){
 
-	mm10.blacklist=read.table('/gpfs/data/reizislab/ee699/ReferenceAnnotations/mm10.blacklist.bed',sep='\t',header = F)
+	mm10.blacklist=read.table('blacklists/mm10.blacklist.bed',sep='\t',header = F)
 	names(mm10.blacklist)=c('chr','start','end')
 	mm10.blacklist=try(makeGRangesFromDataFrame(mm10.blacklist))
 	#print(head(mm10.blacklist))
-	if(!('mm10.blacklist-granges.rds' %in% list.files('/gpfs/data/reizislab/ee699/ReferenceAnnotations/'))){
-		saveRDS(mm10.blacklist,'/gpfs/data/reizislab/ee699/ReferenceAnnotations/mm10.blacklist-granges.rds')
+	if(!('mm10.blacklist-granges.rds' %in% list.files('blacklists'))){
+		saveRDS(mm10.blacklist,'blacklists/mm10.blacklist-granges.rds')
 	}
 	if(class(mm10.blacklist) == 'try-error'){
-		mm10.blacklist=readRDS('/gpfs/data/reizislab/ee699/ReferenceAnnotations/mm10.blacklist-granges.rds')
+		mm10.blacklist=readRDS('blacklists/mm10.blacklist-granges.rds')
 
 	}
 	obj$blacklist_region_fragments=CountsInRegion(object = obj,regions = mm10.blacklist,assay = 'ATAC')
 	obj$blacklist_ratio <- obj$blacklist_region_fragments / obj$atac_peak_region_fragments
 }else{
-	hg38.blacklist=read.table('/gpfs/data/reizislab/ee699/ReferenceAnnotations/hg38-blacklist.v2.bed',sep='\t',header = F)
+	hg38.blacklist=read.table('blacklists/hg38-blacklist.v2.bed',sep='\t',header = F)
         names(hg38.blacklist)=c('chr','start','end')
         hg38.blacklist=try(makeGRangesFromDataFrame(hg38.blacklist))
 
-        if(!('hg38.blacklist-granges.rds' %in% list.files('/gpfs/data/reizislab/ee699/ReferenceAnnotations/'))){
-                saveRDS(hg38.blacklist,'/gpfs/data/reizislab/ee699/ReferenceAnnotations/hg38.blacklist-granges.rds')
+        if(!('hg38.blacklist-granges.rds' %in% list.files('blacklists/'))){
+                saveRDS(hg38.blacklist,'blacklists/hg38.blacklist-granges.rds')
         }
 
         if(class(hg38.blacklist) == 'try-error'){
-                hg38.blacklist=readRDS('/gpfs/data/reizislab/ee699/ReferenceAnnotations/hg38.blacklist-granges.rds')
+                hg38.blacklist=readRDS('blacklists/hg38.blacklist-granges.rds')
 
         }
         obj$blacklist_region_fragments=CountsInRegion(object = obj,regions = hg38.blacklist,assay = 'ATAC')
@@ -301,7 +301,7 @@ saveRDS(obj,'scRNA-ATAC.rds')
 ####### singleR cellDex annotation
 setwd(anno.dir)
 
-source('/gpfs/data/reizislab/ee699/SingleCellAnalysisTools/Seurat_basic/getCellDex-annos.R')
+source('getCellDex-annos.R')
 
 obj=obj %>% NormalizeData(obj)
 
