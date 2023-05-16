@@ -10,7 +10,10 @@ library(tidyverse)
 library(celldex)
 library(SingleR)
 library(SingleCellExperiment)
-
+library(JASPAR2020)
+library(TFBSTools)
+library(BSgenome.Mmusculus.UCSC.mm10)
+library(patchwork)
 
 ######### adapted from: 
 ## I. https://satijalab.org/seurat/articles/weighted_nearest_neighbor_analysis.html#wnn-analysis-of-10x-multiome-rna-atac-1
@@ -278,6 +281,19 @@ obj <- RunUMAP(obj, reduction = 'lsi', dims = 2:50, reduction.name = "umap.atac"
 
 umap=DimPlot(obj,reduction='umap.atac')
 ggsave('ATAC-UMAP.pdf',umap)
+
+message('Compiling Motif Data ... ')
+
+pfm <- getMatrixSet(
+  x = JASPAR2020,
+  opts = list(collection = "CORE", tax_group = 'vertebrates', all_versions = FALSE)
+)
+# add motif information
+obj <- AddMotifs(
+  object = obj,
+  genome = BSgenome.Mmusculus.UCSC.mm10,
+  pfm = pfm
+)
 
 # We calculate a WNN graph, representing a weighted combination of RNA and ATAC-seq modalities.
 # We use this graph for UMAP visualization and clustering
