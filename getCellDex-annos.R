@@ -15,13 +15,11 @@ getCellDex=function(obj,species,assay='RNA'){
     DefaultAssay(obj)=assay
     p=DimPlot(obj,label = T)
     ggsave('ImmGenAnnotations-broad.pdf',p)
-    DefaultAssay(obj)='RNA'
-    obj = obj %>% NormalizeData()
+    
     broad_anno.markers=FindAllMarkers(obj,only.pos=T)
     write.csv(broad_anno.markers,'broad-anno-markers.csv')
     top10_markers=broad_anno.markers %>% data.frame() %>% group_by(cluster) %>% top_n(10,avg_log2FC)
    
-    DefaultAssay(obj)=assay
 
     if(dim( obj@assays[[assay]]@scale.data )[1] ==0){
 
@@ -41,14 +39,14 @@ getCellDex=function(obj,species,assay='RNA'){
     saveRDS(obj,'broad-fine-annos-obj.rds')
 
     Idents(obj)=obj$singleR_ImmgenLabels_fine
-    DefaultAssay(obj)=assay
+    
     p=DimPlot(obj,label = T)
     ggsave('ImmGenAnnotations-fine.pdf',p,height=20,width=20)
     
-    DefaultAssay(obj)='RNA'
+    
     fine_anno.markers=FindAllMarkers(obj,only.pos=T)
     write.csv(fine_anno.markers,'fine-anno-markers.csv')
-    DefaultAssay(obj)=assay
+    
     
     top10_markers=fine_anno.markers %>% data.frame() %>% group_by(cluster)	%>% top_n(10,avg_log2FC)
     ranges_	= seq(1,length(unique(top10_markers$cluster)),5)
@@ -103,8 +101,7 @@ getCellDex=function(obj,species,assay='RNA'){
       Idents(obj)=obj[[glue('{ref.dir.tmp}_broad')]]
       p=DimPlot(obj,label = T)
       ggsave(glue('{ref.dir.tmp}/annotations-broad.pdf'),p)
-      DefaultAssay(obj)='RNA'
-      obj = obj %>% NormalizeData()
+      
       broad_anno.markers=FindAllMarkers(obj,only.pos=T)
       
       write.csv(broad_anno.markers,glue('{ref.dir.tmp}/broad-anno-markers.csv'))
