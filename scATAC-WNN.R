@@ -326,5 +326,5 @@ setwd(anno.dir)
 
 source('getCellDex-annos.R')
 
-getCellDex(obj,species,assay='RNA')
+getCellDex(obj,species,assay='SCT')
 
