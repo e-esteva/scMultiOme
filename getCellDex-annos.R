@@ -16,7 +16,7 @@ getCellDex=function(obj,species,assay='RNA'){
     p=DimPlot(obj,label = T)
     ggsave('ImmGenAnnotations-broad.pdf',p)
     DefaultAssay(obj)='RNA'
-    obj = obj %>% NormalizeData(obj)
+    obj = obj %>% NormalizeData()
     broad_anno.markers=FindAllMarkers(obj,only.pos=T)
     write.csv(broad_anno.markers,'broad-anno-markers.csv')
     top10_markers=broad_anno.markers %>% data.frame() %>% group_by(cluster) %>% top_n(10,avg_log2FC)
@@ -101,15 +101,19 @@ getCellDex=function(obj,species,assay='RNA'){
       
       obj[[glue('{ref.dir.tmp}_broad')]]=broad_anno$labels
       Idents(obj)=obj[[glue('{ref.dir.tmp}_broad')]]
-      DefaultAssay(obj)='RNA'
       p=DimPlot(obj,label = T)
       ggsave(glue('{ref.dir.tmp}/annotations-broad.pdf'),p)
+      DefaultAssay(obj)='RNA'
+      obj = obj %>% NormalizeData()
       broad_anno.markers=FindAllMarkers(obj,only.pos=T)
       
       write.csv(broad_anno.markers,glue('{ref.dir.tmp}/broad-anno-markers.csv'))
       
       top10_markers=broad_anno.markers %>% data.frame() %>% group_by(cluster) %>% top_n(10,avg_log2FC)
-      obj=ScaleData(obj)
+      if(dim( obj@assays[[assay]]@scale.data )[1] ==0){
+
+        	obj=ScaleData(obj)
+       } 
       
       h=DoHeatmap(obj,features=top10_markers$gene)
       ggsave(glue('{ref.dir.tmp}/broad-annotations-top10-markers-Heatmap.pdf'),h)
@@ -122,13 +126,14 @@ getCellDex=function(obj,species,assay='RNA'){
       obj[[glue('{ref.dir.tmp}_fine')]]=fine_anno$labels
       saveRDS(obj,'broad-fine-annos-obj.rds')
       Idents(obj)=obj[[glue('{ref.dir.tmp}_fine')]]
-      DefaultAssay(obj)='RNA'
+	    
       p=DimPlot(obj,label = T)
       ggsave(glue('{ref.dir.tmp}/annotations-fine.pdf'),p,width=20,height=20)
       
       fine_anno.markers=FindAllMarkers(obj,only.pos=T)
       write.csv(fine_anno.markers,glue('{ref.dir.tmp}/fine-anno-markers.csv'))
-      
+
+
       top10_markers=fine_anno.markers %>% data.frame() %>% group_by(cluster)	%>% top_n(10,avg_log2FC)
       ranges_	= seq(1,length(unique(top10_markers$cluster)),5)
       if(length(ranges_) > 1){
@@ -160,7 +165,7 @@ getCellDex=function(obj,species,assay='RNA'){
       }
       
     }
-    
+    saveRDS(obj,'broad-fine-annos-obj.rds')
   }
   
   
