@@ -13,6 +13,7 @@ library(SingleCellExperiment)
 library(JASPAR2020)
 library(TFBSTools)
 library(BSgenome.Mmusculus.UCSC.mm10)
+library(BSgenome.Hsapiens.UCSC.hg38)
 library(patchwork)
 
 ######### adapted from: 
@@ -289,11 +290,21 @@ pfm <- getMatrixSet(
   opts = list(collection = "CORE", tax_group = 'vertebrates', all_versions = FALSE)
 )
 # add motif information
-obj <- AddMotifs(
-  object = obj,
-  genome = BSgenome.Mmusculus.UCSC.mm10,
-  pfm = pfm
-)
+if(genome == 'mm10'){
+   obj <- AddMotifs(
+      object = obj,
+      genome = BSgenome.Mmusculus.UCSC.mm10,
+      pfm = pfm
+   )
+}else{
+    obj <- AddMotifs(
+    	object = obj,
+    	genome = BSgenome.Hsapiens.UCSC.hg38,
+    	pfm = pfm
+   )
+}
+
+	
 
 # We calculate a WNN graph, representing a weighted combination of RNA and ATAC-seq modalities.
 # We use this graph for UMAP visualization and clustering
