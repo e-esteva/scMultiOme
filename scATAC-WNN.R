@@ -326,7 +326,5 @@ setwd(anno.dir)
 
 source('getCellDex-annos.R')
 
-obj=obj %>% NormalizeData(obj)
-
-getCellDex(obj,species,assay='SCT')
+getCellDex(obj,species,assay='RNA')
 
