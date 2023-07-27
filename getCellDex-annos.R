@@ -16,6 +16,7 @@ getCellDex=function(obj,species,assay='RNA'){
     p=DimPlot(obj,label = T)
     ggsave('ImmGenAnnotations-broad.pdf',p)
     DefaultAssay(obj)='RNA'
+    obj = obj %>% NormalizeData(obj)
     broad_anno.markers=FindAllMarkers(obj,only.pos=T)
     write.csv(broad_anno.markers,'broad-anno-markers.csv')
     top10_markers=broad_anno.markers %>% data.frame() %>% group_by(cluster) %>% top_n(10,avg_log2FC)
